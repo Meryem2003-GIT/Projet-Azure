@@ -1,0 +1,41 @@
+﻿@model IEnumerable<gestionPharmacieApp.Models.Pharmacien>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MotPasse)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CinNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MotPasse)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CinNavigation.Cin)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdPharmacien">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdPharmacien">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdPharmacien">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

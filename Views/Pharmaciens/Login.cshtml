@@ -1,0 +1,30 @@
+﻿@model gestionPharmacieApp.Models.LoginModel
+
+@{
+    ViewData["Title"] = "Connexion";
+}
+
+<div class="login-container">
+    <div class="login-card">
+        <h2 class="login-title">Bienvenue</h2>
+        <p class="login-subtitle">Connectez-vous à votre compte</p>
+        <form asp-action="Login" method="post">
+            <div class="input-group">
+                <i class="fa fa-envelope"></i>
+                
+                <input asp-for="Email" class="form-control" placeholder="Entrez votre email" />
+                <span asp-validation-for="Email" class="error"></span>
+            </div>
+            <div class="input-group">
+                
+                <input asp-for="Password" type="password" class="form-control" placeholder="Entrez votre mot de passe" />
+                <span asp-validation-for="Password" class="error"></span>
+            </div>
+            <button type="submit" class="btn btn-login">Se Connecter</button>
+            <div class="links">
+                <a href="#">Mot de passe oublié ?</a>
+                <a href="#">Créer un compte</a>
+            </div>
+        </form>
+    </div>
+</div>
