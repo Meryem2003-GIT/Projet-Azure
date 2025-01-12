@@ -21,7 +21,8 @@ namespace gestionPharmacieApp.Controllers
         // GET: Fournisseurs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Fournisseurs.ToListAsync());
+            var fournisseurs = _context.Fournisseurs;
+            return View(fournisseurs.ToList());
         }
 
         // GET: Fournisseurs/Details/5

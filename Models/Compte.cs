@@ -5,7 +5,7 @@ namespace gestionPharmacieApp.Models;
 
 public partial class Compte
 {
-    public int Cin { get; set; }
+    public String Cin { get; set; }
 
     public string Prenom { get; set; } = null!;
 

@@ -25,7 +25,7 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // GET: Comptes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(String? id)
         {
             if (id == null)
             {
@@ -65,7 +65,7 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // GET: Comptes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(String? id)
         {
             if (id == null)
             {
@@ -85,7 +85,7 @@ namespace gestionPharmacieApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Cin,Prenom,Nom,Adresse,DateNaissance,Email,Telephone")] Compte compte)
+        public async Task<IActionResult> Edit(String id, [Bind("Cin,Prenom,Nom,Adresse,DateNaissance,Email,Telephone")] Compte compte)
         {
             if (id != compte.Cin)
             {
@@ -116,7 +116,7 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // GET: Comptes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(String? id)
         {
             if (id == null)
             {
@@ -148,7 +148,7 @@ namespace gestionPharmacieApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CompteExists(int id)
+        private bool CompteExists(String id)
         {
             return _context.Comptes.Any(e => e.Cin == id);
         }

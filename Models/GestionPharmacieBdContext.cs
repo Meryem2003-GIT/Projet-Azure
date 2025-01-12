@@ -191,8 +191,9 @@ public partial class GestionPharmacieBdContext : DbContext
             entity.Property(e => e.Points).HasColumnName("points");
             entity.Property(e => e.Remise).HasColumnName("remise");
 
-            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.ProgFidelites)
-                .HasForeignKey(d => d.IdClient)
+            entity.HasOne(d => d.IdClientNavigation)
+            .WithOne(p => p.ProgFidelites)
+                .HasForeignKey<ProgFidelite>(d => d.IdClient)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ProgFidel__id_cl__4E88ABD4");
         });

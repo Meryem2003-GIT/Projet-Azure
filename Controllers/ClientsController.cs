@@ -21,8 +21,14 @@ namespace gestionPharmacieApp.Controllers
         // GET: Clients
         public async Task<IActionResult> Index()
         {
-            var gestionPharmacieBdContext = _context.Clients.Include(c => c.CinNavigation);
-            return View(await gestionPharmacieBdContext.ToListAsync());
+            var clients = _context.Clients
+                           .Include(c => c.CinNavigation)       
+                             .Include(c => c.ProgFidelites)       
+                                .ToList();
+
+            // Passer les données à la vue
+            return View(clients);
+            
         }
 
         // GET: Clients/Details/5

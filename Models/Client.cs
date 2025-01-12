@@ -5,13 +5,13 @@ namespace gestionPharmacieApp.Models;
 
 public partial class Client
 {
-    public int? Cin { get; set; }
+    public String? Cin { get; set; }
 
     public int IdClient { get; set; }
 
     public virtual Compte? CinNavigation { get; set; }
 
-    public virtual ICollection<ProgFidelite> ProgFidelites { get; set; } = new List<ProgFidelite>();
+    public virtual ProgFidelite ProgFidelites { get; set; } 
 
     public virtual ICollection<Vente> Ventes { get; set; } = new List<Vente>();
 }
