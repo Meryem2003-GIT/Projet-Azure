@@ -1,47 +1,52 @@
 ﻿@model IEnumerable<gestionPharmacieApp.Models.Fournisseur>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des Fournisseurs";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Liste des Fournisseurs</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<!-- Bouton pour créer un nouveau fournisseur -->
+<div class="mb-4 text-left">
+    <a asp-action="Create" class="btn btn-success">Créer un nouveau fournisseur</a>
+</div>
+
+<!-- Formulaire de recherche -->
+<form method="get" asp-action="Index" class="d-flex align-items-center mb-3">
+    <label for="searchType" class="mr-2 font-weight-bold">Rechercher par :</label>
+    <select id="searchType" name="searchType" class="form-control mr-3" style="width: auto;">
+        <option value="IdFournisseur">Id Fournisseur</option>
+        <option value="NomSociete">Nom Société</option>
+        <option value="Email">Email</option>
+    </select>
+    <input type="text" name="keyword" class="form-control flex-grow-1 mr-3" placeholder="Mot-clé" />
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+</form>
+
+<!-- Tableau des fournisseurs -->
+<table class="table table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomSociete)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Adresse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th></th>
+            <th>Id Fournisseur</th>
+            <th>Nom Société</th>
+            <th>Adresse</th>
+            <th>Email</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomSociete)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Adresse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdFournisseur">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdFournisseur">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdFournisseur">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var fournisseur in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => fournisseur.IdFournisseur)</td>
+                <td>@Html.DisplayFor(modelItem => fournisseur.NomSociete)</td>
+                <td>@Html.DisplayFor(modelItem => fournisseur.Adresse)</td>
+                <td>@Html.DisplayFor(modelItem => fournisseur.Email)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@fournisseur.IdFournisseur" class="btn btn-warning btn-sm">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@fournisseur.IdFournisseur" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

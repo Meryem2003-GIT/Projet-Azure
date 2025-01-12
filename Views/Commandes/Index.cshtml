@@ -1,53 +1,48 @@
 ﻿@model IEnumerable<gestionPharmacieApp.Models.Commande>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des Commandes";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Liste des Commandes</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<!-- Formulaire de recherche -->
+<form method="get" asp-action="Index" class="d-flex align-items-center mb-3">
+    <label for="searchType" class="mr-2 font-weight-bold">Rechercher par :</label>
+    <select id="searchType" name="searchType" class="form-control mr-3" style="width: auto;">
+        <option value="IdCommande">Id Commande</option>
+        <option value="IdFournisseur">Id Fournisseur</option>
+        <option value="Reference">Référence Produit</option>
+    </select>
+    <input type="text" name="keyword" class="form-control flex-grow-1 mr-3" placeholder="Mot-clé" />
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+</form>
+
+<!-- Tableau des commandes -->
+<table class="table table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCommande)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantite)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdFournisseurNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReferenceNavigation)
-            </th>
-            <th></th>
+            <th>Date Commande</th>
+            <th>Référence Produit</th>
+            <th>Quantité</th>
+            <th>Fournisseur</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCommande)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantite)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdFournisseurNavigation.IdFournisseur)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReferenceNavigation.Reference)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCommande">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdCommande">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCommande">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var commande in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => commande.DateCommande)</td>
+                <td>@Html.DisplayFor(modelItem => commande.ReferenceNavigation.Libelle)</td>
+                <td>@Html.DisplayFor(modelItem => commande.Quantite)</td>
+                <td>@Html.DisplayFor(modelItem => commande.IdFournisseurNavigation.NomSociete)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@commande.IdCommande" class="btn btn-info btn-sm">Détails</a>
+                    <a asp-action="Edit" asp-route-id="@commande.IdCommande" class="btn btn-warning btn-sm">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@commande.IdCommande" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

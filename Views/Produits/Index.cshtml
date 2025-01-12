@@ -1,47 +1,50 @@
 ﻿@model IEnumerable<gestionPharmacieApp.Models.Produit>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des Produits";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Liste des Produits</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<!-- Bouton pour créer un nouveau produit -->
+<div class="mb-4 text-left">
+    <a asp-action="Create" class="btn btn-success">Créer un nouveau produit</a>
+</div>
+
+<!-- Formulaire de recherche -->
+<form asp-action="Search" method="get" class="d-flex align-items-center mb-3">
+    <label for="searchType" class="mr-2 font-weight-bold">Rechercher par :</label>
+    <select id="searchType" name="searchType" class="form-control mr-3" style="width: auto;">
+        <option value="Libelle">Libellé</option>
+        <option value="Reference">Référence</option>
+    </select>
+    <input type="text" name="keyword" class="form-control flex-grow-1 mr-3" placeholder="Mot-clé" required />
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+</form>
+
+<!-- Tableau des produits -->
+<table class="table table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DescriptionP)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Libelle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Prix)
-            </th>
-            <th></th>
+            <th>Référence</th>
+            <th>Libellé</th>
+            <th>Prix</th>
+            <th>Description</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescriptionP)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Libelle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Prix)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Reference">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Reference">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Reference">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Reference)</td>
+                <td>@Html.DisplayFor(modelItem => item.Libelle)</td>
+                <td>@Html.DisplayFor(modelItem => item.Prix)</td>
+                <td>@Html.DisplayFor(modelItem => item.DescriptionP)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Reference" class="btn btn-info btn-sm">Détails</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

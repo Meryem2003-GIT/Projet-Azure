@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
 
@@ -19,10 +16,9 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // GET: Fournisseurs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchType, string keyword)
         {
-            var fournisseurs = _context.Fournisseurs;
-            return View(fournisseurs.ToList());
+            return View(await _context.Fournisseurs.ToListAsync());
         }
 
         // GET: Fournisseurs/Details/5
@@ -50,8 +46,6 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // POST: Fournisseurs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdFournisseur,NomSociete,Adresse,Email")] Fournisseur fournisseur)
@@ -64,6 +58,7 @@ namespace gestionPharmacieApp.Controllers
             }
             return View(fournisseur);
         }
+
 
         // GET: Fournisseurs/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -82,8 +77,6 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // POST: Fournisseurs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdFournisseur,NomSociete,Adresse,Email")] Fournisseur fournisseur)
@@ -155,3 +148,4 @@ namespace gestionPharmacieApp.Controllers
         }
     }
 }
+    
