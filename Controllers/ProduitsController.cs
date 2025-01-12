@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestionPharmacieApp.Controllers
 {
@@ -24,22 +24,34 @@ namespace gestionPharmacieApp.Controllers
             return View(await _context.Produits.ToListAsync());
         }
 
-        // GET: Produits/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Produits/Search
+        public async Task<IActionResult> Search(string searchType, string keyword)
         {
-            if (id == null)
+            if (string.IsNullOrWhiteSpace(keyword))
             {
-                return NotFound();
+                return View("Index", await _context.Produits.ToListAsync());
             }
 
-            var produit = await _context.Produits
-                .FirstOrDefaultAsync(m => m.Reference == id);
-            if (produit == null)
+            IEnumerable<Produit> produits;
+
+            if (searchType == "Libelle")
             {
-                return NotFound();
+                produits = await _context.Produits
+                    .Where(p => p.Libelle.Contains(keyword))
+                    .ToListAsync();
+            }
+            else if (searchType == "Reference" && int.TryParse(keyword, out int reference))
+            {
+                produits = await _context.Produits
+                    .Where(p => p.Reference == reference)
+                    .ToListAsync();
+            }
+            else
+            {
+                produits = new List<Produit>();
             }
 
-            return View(produit);
+            return View("Index", produits);
         }
 
         // GET: Produits/Create
@@ -49,8 +61,6 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // POST: Produits/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Reference,DescriptionP,Libelle,Prix")] Produit produit)
@@ -81,8 +91,6 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // POST: Produits/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Reference,DescriptionP,Libelle,Prix")] Produit produit)
@@ -142,9 +150,8 @@ namespace gestionPharmacieApp.Controllers
             if (produit != null)
             {
                 _context.Produits.Remove(produit);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -152,5 +159,70 @@ namespace gestionPharmacieApp.Controllers
         {
             return _context.Produits.Any(e => e.Reference == id);
         }
+
+        // GET: Produits/Details
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var produit = await _context.Produits
+                .FirstOrDefaultAsync(m => m.Reference == id);
+
+            if (produit == null)
+            {
+                return NotFound();
+            }
+
+            // Passe la liste complète des produits à la vue
+            var produits = await _context.Produits.ToListAsync();
+
+            // Crée un ViewModel pour afficher la liste et les détails d'un produit spécifique
+            var viewModel = new ProduitDetailsViewModel
+            {
+                ProduitSelectionne = produit,
+                ListeProduits = produits
+            };
+
+            return View("DetailsListe", viewModel); // Utilise une nouvelle vue "DetailsListe"
+        }
+
+        public IActionResult CommanderProduit(int id)
+        {
+            var produit = _context.Produits.FirstOrDefault(p => p.Reference == id);
+
+            if (produit == null)
+            {
+                return NotFound();
+            }
+
+            var commande = new Commande
+            {
+                Reference = produit.Reference,
+                DateCommande = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            ViewBag.Fournisseurs = new SelectList(_context.Fournisseurs, "IdFournisseur", "NomSociete");
+
+            return View(commande);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CommanderProduit(Commande commande)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Commandes.Add(commande);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Fournisseurs = new SelectList(_context.Fournisseurs, "IdFournisseur", "NomSociete");
+            return View(commande);
+        }
+
+
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace gestionPharmacieApp.Controllers
 {
@@ -19,41 +17,35 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // GET: Stocks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchType, string keyword)
         {
-            var gestionPharmacieBdContext = _context.Stocks.Include(s => s.ReferenceNavigation);
-            return View(await gestionPharmacieBdContext.ToListAsync());
-        }
+            var stocks = _context.Stocks.Include(s => s.ReferenceNavigation).AsQueryable();
 
-        // GET: Stocks/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            if (!string.IsNullOrEmpty(searchType) && !string.IsNullOrEmpty(keyword))
             {
-                return NotFound();
+                switch (searchType)
+                {
+                    case "IdStock":
+                        if (int.TryParse(keyword, out int id))
+                            stocks = stocks.Where(s => s.IdStock == id);
+                        break;
+                    case "Reference":
+                        if (int.TryParse(keyword, out int reference))
+                            stocks = stocks.Where(s => s.Reference == reference);
+                        break;
+                }
             }
 
-            var stock = await _context.Stocks
-                .Include(s => s.ReferenceNavigation)
-                .FirstOrDefaultAsync(m => m.IdStock == id);
-            if (stock == null)
-            {
-                return NotFound();
-            }
-
-            return View(stock);
+            return View(await stocks.ToListAsync());
         }
 
         // GET: Stocks/Create
         public IActionResult Create()
         {
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference");
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle");
             return View();
         }
 
-        // POST: Stocks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdStock,Reference,Quantite")] Stock stock)
@@ -64,38 +56,27 @@ namespace gestionPharmacieApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference", stock.Reference);
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle", stock.Reference);
             return View(stock);
         }
 
         // GET: Stocks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var stock = await _context.Stocks.FindAsync(id);
-            if (stock == null)
-            {
-                return NotFound();
-            }
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference", stock.Reference);
+            if (stock == null) return NotFound();
+
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle", stock.Reference);
             return View(stock);
         }
 
-        // POST: Stocks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdStock,Reference,Quantite")] Stock stock)
         {
-            if (id != stock.IdStock)
-            {
-                return NotFound();
-            }
+            if (id != stock.IdStock) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -106,58 +87,33 @@ namespace gestionPharmacieApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StockExists(stock.IdStock))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.Stocks.Any(s => s.IdStock == id)) return NotFound();
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference", stock.Reference);
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle", stock.Reference);
             return View(stock);
         }
 
         // GET: Stocks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var stock = await _context.Stocks
-                .Include(s => s.ReferenceNavigation)
-                .FirstOrDefaultAsync(m => m.IdStock == id);
-            if (stock == null)
-            {
-                return NotFound();
-            }
-
-            return View(stock);
+            var stock = await _context.Stocks.Include(s => s.ReferenceNavigation).FirstOrDefaultAsync(m => m.IdStock == id);
+            return stock == null ? NotFound() : View(stock);
         }
 
-        // POST: Stocks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var stock = await _context.Stocks.FindAsync(id);
-            if (stock != null)
-            {
-                _context.Stocks.Remove(stock);
-            }
+            if (stock != null) _context.Stocks.Remove(stock);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool StockExists(int id)
-        {
-            return _context.Stocks.Any(e => e.IdStock == id);
         }
     }
 }
