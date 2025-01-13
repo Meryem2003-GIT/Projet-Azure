@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<GestionPharmacieBdContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("gestionAeroportContextConnection")));
+builder.Services.AddDbContext<GestionPharmacieBdContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("gestionPharmacieContextConnection")));
 
 
 var app = builder.Build();

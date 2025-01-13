@@ -34,7 +34,7 @@ namespace gestionPharmacieApp.Controllers
                     .FirstOrDefault(pc => pc.Compte.Email == m.Email && pc.Pharmacien.MotPasse == m.Password);
                 if (pharmacien != null)
                 {
-                    return RedirectToAction("commandes", "index");
+                    return Redirect("/html/accueil.html");
                 }
                 ViewBag.Message = "Identifiants incorrects.";
             }

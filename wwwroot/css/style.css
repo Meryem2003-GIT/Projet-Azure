@@ -1,12 +1,127 @@
-﻿.d-flex .form-control,
+.d-flex .form-control,
 .d-flex .btn {
-    margin-right: 15px; /* Ajoute un espace entre les éléments */
+    margin-right: 15px; /* Ajoute un espace entre les �l�ments */
 }
 
-.d-flex .flex-grow-1 {
-    flex-grow: 1; /* Permet au champ "Mot-clé" de prendre le maximum d'espace disponible */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
 }
 
-.d-flex label {
-    margin-bottom: 0; /* Évite les marges verticales inutiles */
+.login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 100%;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+    .input-group label {
+        display: block;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+        .input-group input:focus {
+            border-color: #6a11cb;
+            outline: none;
+            box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
+        }
+
+.btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+    .btn-login:hover {
+        background: linear-gradient(135deg, #2575fc, #6a11cb);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+.links {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+    .links a {
+        color: #6a11cb;
+        text-decoration: none;
+        margin: 0 5px;
+        transition: 0.3s;
+    }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+nav {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
+    color: white;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.links a:hover {
+    color: #ff8c00;
+    transition: color 0.3s ease;
 }

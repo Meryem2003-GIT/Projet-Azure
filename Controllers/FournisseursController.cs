@@ -18,29 +18,7 @@ namespace gestionPharmacieApp.Controllers
         // GET: Fournisseurs
         public async Task<IActionResult> Index(string searchType, string keyword)
         {
-            var fournisseurs = _context.Fournisseurs.AsQueryable();
-
-            // Gestion de la recherche
-            if (!string.IsNullOrEmpty(searchType) && !string.IsNullOrEmpty(keyword))
-            {
-                switch (searchType)
-                {
-                    case "IdFournisseur":
-                        if (int.TryParse(keyword, out int idFournisseur))
-                        {
-                            fournisseurs = fournisseurs.Where(f => f.IdFournisseur == idFournisseur);
-                        }
-                        break;
-                    case "NomSociete":
-                        fournisseurs = fournisseurs.Where(f => f.NomSociete.Contains(keyword));
-                        break;
-                    case "Email":
-                        fournisseurs = fournisseurs.Where(f => f.Email.Contains(keyword));
-                        break;
-                }
-            }
-
-            return View(await fournisseurs.ToListAsync());
+            return View(await _context.Fournisseurs.ToListAsync());
         }
 
         // GET: Fournisseurs/Details/5
