@@ -23,7 +23,6 @@
     <button type="submit" class="btn btn-primary">Rechercher</button>
 </form>
 
-<!-- Tableau des fournisseurs -->
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
@@ -31,7 +30,7 @@
             <th>Nom Société</th>
             <th>Adresse</th>
             <th>Email</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -43,10 +42,10 @@
                 <td>@Html.DisplayFor(modelItem => fournisseur.Adresse)</td>
                 <td>@Html.DisplayFor(modelItem => fournisseur.Email)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@fournisseur.IdFournisseur" class="btn btn-warning btn-sm">Modifier</a>
-                    <a asp-action="Delete" asp-route-id="@fournisseur.IdFournisseur" class="btn btn-danger btn-sm">Supprimer</a>
+                    <a asp-action="Details" asp-route-id="@fournisseur.IdFournisseur" class="btn btn-info btn-sm">Détails</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+    

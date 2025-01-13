@@ -170,8 +170,7 @@ namespace gestionPharmacieApp.Controllers
             return View(commande);
         }
 
-        // POST: Commandes/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -179,12 +178,15 @@ namespace gestionPharmacieApp.Controllers
             if (commande != null)
             {
                 _context.Commandes.Remove(commande);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                TempData["Error"] = "La commande n'existe pas.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool CommandeExists(int id)
         {
             return _context.Commandes.Any(e => e.IdCommande == id);

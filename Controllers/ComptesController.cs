@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
 
@@ -24,10 +23,10 @@ namespace gestionPharmacieApp.Controllers
             return View(await _context.Comptes.ToListAsync());
         }
 
-        // GET: Comptes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Comptes/Details/{Cin}
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -49,8 +48,6 @@ namespace gestionPharmacieApp.Controllers
         }
 
         // POST: Comptes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Cin,Prenom,Nom,Adresse,DateNaissance,Email,Telephone")] Compte compte)
@@ -64,10 +61,10 @@ namespace gestionPharmacieApp.Controllers
             return View(compte);
         }
 
-        // GET: Comptes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Comptes/Edit/{Cin}
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -80,12 +77,10 @@ namespace gestionPharmacieApp.Controllers
             return View(compte);
         }
 
-        // POST: Comptes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Comptes/Edit/{Cin}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Cin,Prenom,Nom,Adresse,DateNaissance,Email,Telephone")] Compte compte)
+        public async Task<IActionResult> Edit(string id, [Bind("Cin,Prenom,Nom,Adresse,DateNaissance,Email,Telephone")] Compte compte)
         {
             if (id != compte.Cin)
             {
@@ -115,10 +110,10 @@ namespace gestionPharmacieApp.Controllers
             return View(compte);
         }
 
-        // GET: Comptes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Comptes/Delete/{Cin}
+        public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -133,10 +128,10 @@ namespace gestionPharmacieApp.Controllers
             return View(compte);
         }
 
-        // POST: Comptes/Delete/5
+        // POST: Comptes/Delete/{Cin}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var compte = await _context.Comptes.FindAsync(id);
             if (compte != null)
@@ -148,7 +143,7 @@ namespace gestionPharmacieApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CompteExists(int id)
+        private bool CompteExists(string id)
         {
             return _context.Comptes.Any(e => e.Cin == id);
         }

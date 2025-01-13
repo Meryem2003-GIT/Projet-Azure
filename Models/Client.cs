@@ -5,7 +5,7 @@ namespace gestionPharmacieApp.Models;
 
 public partial class Client
 {
-    public int? Cin { get; set; }
+    public String Cin { get; set; }
 
     public int IdClient { get; set; }
 

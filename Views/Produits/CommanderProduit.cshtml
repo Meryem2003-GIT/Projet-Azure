@@ -7,24 +7,21 @@
 <h1>Commander Produit</h1>
 
 <div>
-    <form asp-action="CommanderProduit" method="post">
-        <input type="hidden" asp-for="Reference" />
+    <form asp-action="ApprouverCommande" method="post">
+        <input type="hidden" name="reference" value="@Model.Reference" />
         <div class="form-group">
             <label asp-for="Quantite" class="control-label">Quantité</label>
-            <input asp-for="Quantite" class="form-control" />
-            <span asp-validation-for="Quantite" class="text-danger"></span>
+            <input name="quantite" class="form-control" required />
         </div>
         <div class="form-group">
             <label asp-for="DateCommande" class="control-label">Date de Commande</label>
-            <input asp-for="DateCommande" class="form-control" type="date" />
-            <span asp-validation-for="DateCommande" class="text-danger"></span>
+            <input name="dateCommande" class="form-control" type="date" required />
         </div>
         <div class="form-group">
             <label asp-for="IdFournisseur" class="control-label">Fournisseur</label>
-            <select asp-for="IdFournisseur" class="form-control" asp-items="ViewBag.Fournisseurs">
+            <select name="idFournisseur" class="form-control" asp-items="ViewBag.Fournisseurs">
                 <option value="">Sélectionnez un fournisseur</option>
             </select>
-            <span asp-validation-for="IdFournisseur" class="text-danger"></span>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-success">Approuver</button>
