@@ -1,36 +1,31 @@
 ﻿@model gestionPharmacieApp.Models.Fournisseur
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails du Fournisseur";
 }
 
-<h1>Details</h1>
+<h1>Détails du Fournisseur</h1>
 
 <div>
     <h4>Fournisseur</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomSociete)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomSociete)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Adresse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Adresse)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+        <dt class="col-sm-3">Id Fournisseur</dt>
+        <dd class="col-sm-9">@Model.IdFournisseur</dd>
+
+        <dt class="col-sm-3">Nom Société</dt>
+        <dd class="col-sm-9">@Model.NomSociete</dd>
+
+        <dt class="col-sm-3">Adresse</dt>
+        <dd class="col-sm-9">@Model.Adresse</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdFournisseur">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.IdFournisseur" class="btn btn-warning">Modifier</a>
+        <a asp-action="Delete" asp-route-id="@Model.IdFournisseur" class="btn btn-danger">Supprimer</a>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+    </div>
 </div>

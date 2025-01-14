@@ -115,5 +115,27 @@ namespace gestionPharmacieApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Récupérer le stock et inclure les informations du produit
+            var stock = await _context.Stocks
+                .Include(s => s.ReferenceNavigation) // Inclut les détails du produit
+                .FirstOrDefaultAsync(m => m.IdStock == id);
+
+            if (stock == null)
+            {
+                return NotFound();
+            }
+
+            // Retourner directement les détails du produit lié
+            return View("DetailsProduit", stock.ReferenceNavigation); // Vue "DetailsProduit" avec les infos du produit
+        }
+
+
     }
 }

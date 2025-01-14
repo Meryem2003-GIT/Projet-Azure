@@ -2,7 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Conteneur global -->
+<div style="position: relative; height: 100vh; overflow: hidden;">
+    <!-- Image de fond -->
+    <img src="~/images/image1.jpg" alt="Image" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+
+    <div class="d-flex justify-content-center align-items-center" style="position: absolute; top: 30%; left: 20%; transform: translate(-50%, -50%);">
+        <div style="background-color: #f8d7da; border: 2px solid #f5c6cb; border-radius: 10px; width: 300px; text-align: center; padding: 20px;">
+            <img src="~/images/alerte.png" alt="Warning Icon" style="width: 50px; height: 50px; margin-bottom: 10px;">
+            <h4 style="color: #721c24;">Alerte de Stock</h4>
+            <p style="font-size: 18px; color: #721c24; font-weight: bold;">Produits avec quantite < 5 : @ViewBag.AlertStockCount</p>
+        </div>
+    </div>
+
+

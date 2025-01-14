@@ -12,37 +12,37 @@
     <select id="searchType" name="searchType" class="form-control mr-3" style="width: auto;">
         <option value="IdCommande">Id Commande</option>
         <option value="IdFournisseur">Id Fournisseur</option>
-        <option value="Reference">Référence Produit</option>
+        <option value="Reference">Libelle Produit</option>
     </select>
     <input type="text" name="keyword" class="form-control flex-grow-1 mr-3" placeholder="Mot-clé" />
     <button type="submit" class="btn btn-primary">Rechercher</button>
 </form>
 
-<!-- Tableau des commandes -->
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
+            <th>Id Commande</th>
             <th>Date Commande</th>
-            <th>Référence Produit</th>
+            <th>Libelle Produit</th>
             <th>Quantité</th>
             <th>Fournisseur</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var commande in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => commande.IdCommande)</td>
                 <td>@Html.DisplayFor(modelItem => commande.DateCommande)</td>
                 <td>@Html.DisplayFor(modelItem => commande.ReferenceNavigation.Libelle)</td>
                 <td>@Html.DisplayFor(modelItem => commande.Quantite)</td>
                 <td>@Html.DisplayFor(modelItem => commande.IdFournisseurNavigation.NomSociete)</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@commande.IdCommande" class="btn btn-info btn-sm">Détails</a>
-                    <a asp-action="Edit" asp-route-id="@commande.IdCommande" class="btn btn-warning btn-sm">Modifier</a>
-                    <a asp-action="Delete" asp-route-id="@commande.IdCommande" class="btn btn-danger btn-sm">Supprimer</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

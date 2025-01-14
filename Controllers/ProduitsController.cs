@@ -222,6 +222,52 @@ namespace gestionPharmacieApp.Controllers
             ViewBag.Fournisseurs = new SelectList(_context.Fournisseurs, "IdFournisseur", "NomSociete");
             return View(commande);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApprouverCommande(int reference, int quantite, DateTime dateCommande, int idFournisseur)
+        {
+            if (quantite <= 0 || idFournisseur == 0)
+            {
+                TempData["Error"] = "Les informations de la commande sont invalides.";
+                return RedirectToAction("Details", new { id = reference });
+            }
+
+            // Convertir DateTime en DateOnly
+            var dateCommandeOnly = DateOnly.FromDateTime(dateCommande);
+
+            // Ajouter la commande à la table Commandes
+            var commande = new Commande
+            {
+                Reference = reference,
+                Quantite = quantite,
+                DateCommande = dateCommandeOnly,
+                IdFournisseur = idFournisseur
+            };
+            _context.Commandes.Add(commande);
+
+            // Vérifier si le produit existe déjà dans le stock
+            var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Reference == reference);
+            if (stock == null)
+            {
+                stock = new Stock
+                {
+                    Reference = reference,
+                    Quantite = quantite
+                };
+                _context.Stocks.Add(stock);
+            }
+            else
+            {
+                stock.Quantite += quantite;
+                _context.Stocks.Update(stock);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Commande approuvée et stock mis à jour.";
+            return RedirectToAction("Details", new { id = reference });
+        }
+
 
 
     }

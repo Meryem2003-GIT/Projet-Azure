@@ -1,22 +1,30 @@
 using System.Diagnostics;
 using gestionPharmacieApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace gestionPharmacieApp.Controllers
 {
     public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+    {
+        private readonly ILogger<HomeController> _logger;   
+        private readonly GestionPharmacieBdContext _context;
+
+        public HomeController(ILogger<HomeController> logger, GestionPharmacieBdContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
+            int alertStockCount = _context.Stocks.Count(s => s.Quantite < 5); // Requête dynamique
+            ViewBag.AlertStockCount = alertStockCount;
             return View();
         }
+
+        
 
         public IActionResult Privacy()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace gestionPharmacieApp.Models;
 
@@ -7,6 +8,7 @@ public partial class Produit
 {
     public int Reference { get; set; }
 
+    [Display(Name = "Description")]
     public string DescriptionP { get; set; } = null!;
 
     public string Libelle { get; set; } = null!;

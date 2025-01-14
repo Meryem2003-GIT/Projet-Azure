@@ -1,30 +1,28 @@
 ﻿@model gestionPharmacieApp.Models.Stock
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails du Stock";
 }
 
-<h1>Details</h1>
+<h1>Détails du Stock</h1>
 
 <div>
     <h4>Stock</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantite)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantite)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReferenceNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReferenceNavigation.Reference)
-        </dd>
+        <dt class="col-sm-2">Id Stock</dt>
+        <dd class="col-sm-10">@Model.IdStock</dd>
+
+        <dt class="col-sm-2">Référence Produit</dt>
+        <dd class="col-sm-10">@Model.Reference</dd>
+
+        <dt class="col-sm-2">Libellé Produit</dt>
+        <dd class="col-sm-10">@Model.ReferenceNavigation.Libelle</dd>
+
+        <dt class="col-sm-2">Quantité</dt>
+        <dd class="col-sm-10">@Model.Quantite</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdStock">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <!-- Gardez uniquement le bouton pour retourner à la liste -->
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
 </div>

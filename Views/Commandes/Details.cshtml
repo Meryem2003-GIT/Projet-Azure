@@ -1,42 +1,43 @@
 ﻿@model gestionPharmacieApp.Models.Commande
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails de la Commande";
 }
 
-<h1>Details</h1>
+<h1>Détails de la Commande</h1>
 
 <div>
     <h4>Commande</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCommande)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCommande)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantite)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantite)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdFournisseurNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdFournisseurNavigation.IdFournisseur)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReferenceNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReferenceNavigation.Reference)
-        </dd>
+        <dt class="col-sm-3">Id Commande</dt>
+        <dd class="col-sm-9">@Model.IdCommande</dd>
+
+        <dt class="col-sm-3">Date Commande</dt>
+        <dd class="col-sm-9">@Model.DateCommande</dd>
+
+        <dt class="col-sm-3">Référence Produit</dt>
+        <dd class="col-sm-9">@Model.ReferenceNavigation.Libelle</dd>
+
+        <dt class="col-sm-3">Quantité</dt>
+        <dd class="col-sm-9">@Model.Quantite</dd>
+
+        <dt class="col-sm-3">Fournisseur</dt>
+        <dd class="col-sm-9">@Model.IdFournisseurNavigation.NomSociete</dd>
     </dl>
+
+    <div class="mt-4">
+        <form asp-action="DeleteConfirmed" asp-route-id="@Model.IdCommande" method="post" onsubmit="return confirmDelete()">
+            <button type="submit" class="btn btn-danger">Annuler la commande</button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdCommande">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            return confirm('Voulez-vous vraiment annuler cette commande ?');
+        }
+    </script>
+}
