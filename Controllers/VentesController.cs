@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Numerics;
 
 namespace gestionPharmacieApp.Controllers
 {
@@ -21,13 +23,18 @@ namespace gestionPharmacieApp.Controllers
         // GET: Ventes
         public async Task<IActionResult> Index()
         {
-            var gestionPharmacieBdContext = _context.Ventes.Include(v => v.IdClientNavigation).Include(v => v.ReferenceNavigation);
+            var gestionPharmacieBdContext = _context.Ventes.Include(v => v.IdClientNavigation).Include(v => v.ReferenceNavigation)
+                .Include(f => f.IdFactureNavigation);
             return View(await gestionPharmacieBdContext.ToListAsync());
         }
 
         // GET: Ventes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!id.HasValue)
+            {
+                return NotFound(); 
+            }
             if (id == null)
             {
                 return NotFound();
@@ -44,31 +51,149 @@ namespace gestionPharmacieApp.Controllers
 
             return View(vente);
         }
-
-        // GET: Ventes/Create
-        public IActionResult Create()
+        // GET: Produits/Search
+        public async Task<IActionResult> Search(string searchType, string keyword)
         {
-            ViewData["IdClient"] = new SelectList(_context.Clients, "IdClient", "IdClient");
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference");
-            return View();
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return View("Index", await _context.Ventes.ToListAsync());
+            }
+
+            IEnumerable<Vente> ventes;
+
+            if (searchType == "cin")
+            {
+                ventes = await _context.Ventes
+                    .Include(v => v.IdClientNavigation)
+                    .Include(v => v.ReferenceNavigation)
+                    .Where(v => v.IdClientNavigation.Cin.Contains(keyword))
+                    .ToListAsync();
+            }
+            else if (searchType == "libelle" )
+            {
+                ventes = await _context.Ventes
+                    .Where(v => v.ReferenceNavigation.Libelle.Contains(keyword))
+                    .ToListAsync();
+            }
+            else
+            {
+                ventes = new List<Vente>();
+            }
+
+            return View("Index", ventes);
         }
 
-        // POST: Ventes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // GET: Ventes/Create
+        public IActionResult Create(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound("ID client non spécifié.");
+            }
+            var vente = new Vente
+            {
+                IdClient = id.Value
+            };
+            
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle");
+            return View(vente);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdVente,DateVente,Reference,Quantite,IdClient")] Vente vente)
         {
-            if (ModelState.IsValid)
             {
-                _context.Add(vente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Vente vt = new Vente()
+                {
+                    IdClient = vente.IdClient,
+                    DateVente = DateOnly.FromDateTime(DateTime.Now),
+                    Reference = vente.Reference,
+                    Quantite = vente.Quantite,
+                };
+                try
+                {
+                    // Définit la date de vente
+                    vente.DateVente = DateOnly.FromDateTime(DateTime.Now);
+
+                    // Vérifie si le produit existe
+                    var produit = await _context.Produits.FirstOrDefaultAsync(p => p.Reference == vente.Reference);
+                    if (produit == null)
+                    {
+                        ModelState.AddModelError("", "Le produit spécifié n'existe pas.");
+                        ResetViewData(vt);
+                        return View(vente);
+                    }
+
+                    // Vérifie si le stock est suffisant
+                    var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Reference == vente.Reference);
+                    if (stock == null || stock.Quantite < vente.Quantite )
+                    {
+                        ModelState.AddModelError("", $"le stock est{stock.Quantite} la quantite est : {vente.Quantite}");
+                        ModelState.AddModelError("", "Quantité demandée non disponible ou stock introuvable.");
+                        ResetViewData(vt);
+                        return View(vente);
+                    }
+
+                    // Crée une nouvelle facture
+                    var facture = new Facture { Total = 0 };
+                    _context.Factures.Add(facture);
+                    await _context.SaveChangesAsync();
+
+                    // Associe la facture à la vente
+                    vente.IdFacture = facture.IdFacture;
+
+                    // Ajoute la vente
+                    _context.Ventes.Add(vente);
+                    await _context.SaveChangesAsync();
+
+                    // Met à jour les points de fidélité
+                    var programmeFidelite = await _context.ProgFidelites.FirstOrDefaultAsync(p => p.IdClient == vente.IdClient);
+                    if (programmeFidelite != null)
+                    {
+                        double totalVente = produit.Prix * vente.Quantite;
+                        programmeFidelite.Points += (int)Math.Floor(totalVente);
+                        if (programmeFidelite.Points >= 1000)
+                        {
+                            programmeFidelite.Remise = 2;
+                            // Met à jour la facture avec le total
+
+                            facture.Total += totalVente - (totalVente * 0.02);
+                            programmeFidelite.Points -= 100;
+                            _context.Factures.Update(facture);
+                            await _context.SaveChangesAsync();
+                        }
+                        else {
+                            facture.Total = totalVente;
+                        }
+                        _context.ProgFidelites.Update(programmeFidelite);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Met à jour le stock
+                    stock.Quantite -= vente.Quantite;
+                    _context.Stocks.Update(stock);
+
+                    // Enregistre les modifications
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("factureClient", "Factures",facture);
+                }
+                catch (Exception ex)
+                {
+                    // En cas d'exception, nettoyez le suivi du DbContext
+                    _context.ChangeTracker.Clear();
+                    ModelState.AddModelError("", $"Une erreur inattendue est{vente.IdClient} survenue : {ex.InnerException?.Message ?? ex.Message}");
+                    ResetViewData(vt);
+                    return View(vente);
+                }
             }
+        }
+
+// Méthode auxiliaire pour réinitialiser les listes déroulantes
+private void ResetViewData(Vente vente)
+        {
             ViewData["IdClient"] = new SelectList(_context.Clients, "IdClient", "IdClient", vente.IdClient);
-            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Reference", vente.Reference);
-            return View(vente);
+            ViewData["Reference"] = new SelectList(_context.Produits, "Reference", "Libelle", vente.Reference);
         }
 
         // GET: Ventes/Edit/5

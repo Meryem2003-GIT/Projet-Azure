@@ -1,0 +1,51 @@
+﻿@model FactureModel
+
+<div class="facture">
+    <h2>Ajouter des Produits à la Facture #@Model.FactureId</h2>
+
+    <p><strong>Client :</strong> @Model.ClientNom</p>
+    <p><strong>Email :</strong> @Model.ClientEmail</p>
+
+    <h3>Produits Existant</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix Unitaire</th>
+                <th>Quantité</th>
+                <th>Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produit in Model.Produits)
+            {
+                <tr>
+                    <td>@produit.ProduitLibelle</td>
+                    <td>@produit.ProduitPrix.ToString("F2") DH</td>
+                    <td>@produit.Quantite</td>
+                    <td>@produit.MontantProduit.ToString("F2") DH</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Ajouter un Nouveau Produit</h3>
+    <form asp-action="AjouterProduit" asp-controller="Factures" method="post">
+        <input type="hidden" name="IdFacture" value="@Model.FactureId" />
+        <div>
+            <label>Produit</label>
+            <select name="ReferenceProduit" class="form-control">
+                <option value="">-- Sélectionner un Produit --</option>
+                @foreach (var produit in Model.ProduitsBD)
+                {
+                    <option value="@produit.Value">@produit.Text</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Quantité</label>
+            <input name="Quantite" type="number" min="1" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter le Produit</button>
+    </form>
+</div>

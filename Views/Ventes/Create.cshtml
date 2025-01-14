@@ -1,5 +1,6 @@
 ﻿@model gestionPharmacieApp.Models.Vente
 
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,14 +13,10 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DateVente" class="control-label"></label>
-                <input asp-for="DateVente" class="form-control" />
-                <span asp-validation-for="DateVente" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="Reference" class="control-label"></label>
-                <select asp-for="Reference" class ="form-control" asp-items="ViewBag.Reference"></select>
+                <select asp-for="Reference" class="form-control" asp-items="ViewBag.Reference"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Quantite" class="control-label"></label>
@@ -27,11 +24,11 @@
                 <span asp-validation-for="Quantite" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdClient" class="control-label"></label>
-                <select asp-for="IdClient" class ="form-control" asp-items="ViewBag.IdClient"></select>
+                
+                <input type="hidden" asp-for="IdClient"  />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit"  value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -42,5 +39,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

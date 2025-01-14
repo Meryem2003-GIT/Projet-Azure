@@ -18,127 +18,187 @@ namespace gestionPharmacieApp.Controllers
             _context = context;
         }
 
-        // GET: Factures
+        public async Task<ActionResult> factureClient(Facture f)
+        {
+            var factureDetails = from facture in _context.Factures
+                                 join vente in _context.Ventes on facture.IdFacture equals vente.IdFacture
+                                 join produit in _context.Produits on vente.Reference equals produit.Reference
+                                 join client in _context.Clients on vente.IdClient equals client.IdClient
+                                 join compte in _context.Comptes on client.Cin equals compte.Cin
+                                 where facture.IdFacture == f.IdFacture
+                                 select new
+                                 {
+                                     FactureId = facture.IdFacture,
+                                     FactureTotal = facture.Total,
+                                     ClientNom = compte.Nom,
+                                     ClientId = client.IdClient,
+                                     ClientPrenom = compte.Prenom,
+                                     ClientEmail = compte.Email,
+                                     ProduitLibelle = produit.Libelle,
+                                     ProduitPrix = produit.Prix,
+                                     Quantite = vente.Quantite,
+                                     MontantProduit = produit.Prix * vente.Quantite,
+                                     Remise = (from prog in _context.ProgFidelites
+                                               where prog.IdClient == client.IdClient
+                                               select prog.Remise).FirstOrDefault()
+                                 };
+
+            var factureData = factureDetails.GroupBy(f => new { 
+                                                f.FactureId, 
+                                                f.FactureTotal, 
+                                                f.ClientId, 
+                                                f.ClientNom, 
+                                                f.ClientPrenom, 
+                                                f.ClientEmail })
+                                             .Select(group => new FactureModel
+                                             {
+                                                 FactureId = group.Key.FactureId,
+                                                 FactureTotal = group.Key.FactureTotal,
+                                                 ClientId = group.Key.ClientId,
+                                                 ClientNom = group.Key.ClientNom,
+                                                 ClientPrenom = group.Key.ClientPrenom,
+                                                 ClientEmail = group.Key.ClientEmail,
+                                                 Produits = group.Select(p => new ProduitDetailsModel
+                                                 {
+                                                     ProduitLibelle = p.ProduitLibelle,
+                                                     ProduitPrix = p.ProduitPrix,
+                                                     Quantite = p.Quantite,
+                                                     MontantProduit = p.MontantProduit,
+                                                     
+                                                 }).ToList()
+                                             }).FirstOrDefault();
+
+            if (factureData == null)
+            {
+                return NotFound();
+            }
+
+            return View(factureData);
+        }
+
+
+        [HttpGet]
+        public IActionResult AjouterProduit(int? idFacture)
+        {
+            var factureDetails = from facture in _context.Factures
+                                 join vente in _context.Ventes on facture.IdFacture equals vente.IdFacture
+                                 join produit in _context.Produits on vente.Reference equals produit.Reference
+                                 join client in _context.Clients on vente.IdClient equals client.IdClient
+                                 join compte in _context.Comptes on client.Cin equals compte.Cin
+                                 where facture.IdFacture == idFacture
+                                 select new
+                                 {
+                                     FactureId = facture.IdFacture,
+                                     FactureTotal = facture.Total,
+                                     ClientNom = compte.Nom,
+                                     ClientId = client.IdClient,
+                                     ClientPrenom = compte.Prenom,
+                                     ClientEmail = compte.Email,
+                                     ProduitLibelle = produit.Libelle,
+                                     ProduitPrix = produit.Prix,
+                                     Quantite = vente.Quantite,
+                                     MontantProduit = produit.Prix * vente.Quantite,
+                                     Remise = (from prog in _context.ProgFidelites
+                                               where prog.IdClient == client.IdClient
+                                               select prog.Remise).FirstOrDefault()
+                                 };
+
+            if (factureDetails == null)
+            {
+                return NotFound("Facture introuvable.");
+            }
+
+            var factureData = factureDetails.GroupBy(f => new {
+                f.FactureId,
+                f.FactureTotal,
+                f.ClientId,
+                f.ClientNom,
+                f.ClientPrenom,
+                f.ClientEmail
+            }).Select(group => new FactureModel
+                                             {
+                                                 FactureId = group.Key.FactureId,
+                                                 FactureTotal = group.Key.FactureTotal,
+                                                 ClientId = group.Key.ClientId,
+                                                 ClientNom = group.Key.ClientNom,
+                                                 ClientPrenom = group.Key.ClientPrenom,
+                                                 ClientEmail = group.Key.ClientEmail,
+                                                 Produits = group.Select(p => new ProduitDetailsModel
+                                                 {
+                                                     ProduitLibelle = p.ProduitLibelle,
+                                                     ProduitPrix = p.ProduitPrix,
+                                                     Quantite = p.Quantite,
+                                                     MontantProduit = p.MontantProduit,
+
+                                                 }).ToList()
+                                             }).FirstOrDefault();
+            factureData.ProduitsBD = _context.Produits.Select(p => new SelectListItem
+            {
+                Value = p.Reference.ToString(),
+                Text = p.Libelle
+            }).ToList();
+
+            if (factureData == null)
+            {
+                return NotFound();
+            }
+
+            return View(factureData);
+        }
+
+        [HttpPost]
+        public IActionResult AjouterProduit(int idFacture, int produitId, int quantite)
+        {
+            var facture = _context.Factures.FirstOrDefault(f => f.IdFacture == idFacture);
+            if (facture == null)
+            {
+                return NotFound("Facture introuvable.");
+            }
+
+            var produit = _context.Produits.FirstOrDefault(p => p.Reference == produitId);
+            if (produit == null)
+            {
+                return NotFound("Produit introuvable.");
+            }
+
+            // Ajouter le produit à la facture
+            var vente = new Vente
+            {
+                IdFacture = idFacture,
+                Reference = produitId,
+                Quantite = quantite
+            };
+            _context.Ventes.Add(vente);
+            _context.SaveChanges();
+
+            // Rediriger vers la même page pour afficher la mise à jour
+            return RedirectToAction("AjouterProduits", new { idFacture });
+        }
         public async Task<IActionResult> Index()
         {
-            var gestionPharmacieBdContext = _context.Factures.Include(f => f.IdVenteNavigation);
-            return View(await gestionPharmacieBdContext.ToListAsync());
+            var factures = from f in _context.Factures
+                           join v in _context.Ventes on f.IdFacture equals v.IdFacture
+                           join p in _context.Produits on v.Reference equals p.Reference
+                           join c in _context.Clients on v.IdClient equals c.IdClient
+                           join ct in _context.Comptes on c.Cin equals ct.Cin
+                           where v.DateVente >= new DateOnly(2025, 01, 01) && v.DateVente <= new DateOnly(2025, 12, 31)
+                           select new
+                           {
+                               FactureId = f.IdFacture,
+                               TotalFacture = f.Total,
+                               DateVente = v.DateVente,
+                               Quantite = v.Quantite,
+                               ProduitLibelle = p.Libelle,
+                               ProduitPrix = p.Prix,
+                               ClientNom = ct.Prenom + " " + ct.Nom,
+                               ClientEmail = ct.Email
+                           };
+
+            var resultList = await factures.ToListAsync();
+            return View(resultList);
+
         }
 
-        // GET: Factures/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var facture = await _context.Factures
-                .Include(f => f.IdVenteNavigation)
-                .FirstOrDefaultAsync(m => m.IdFacture == id);
-            if (facture == null)
-            {
-                return NotFound();
-            }
-
-            return View(facture);
-        }
-
-        // GET: Factures/Create
-        public IActionResult Create()
-        {
-            ViewData["IdVente"] = new SelectList(_context.Ventes, "IdVente", "IdVente");
-            return View();
-        }
-
-        // POST: Factures/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFacture,Total,IdVente")] Facture facture)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(facture);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdVente"] = new SelectList(_context.Ventes, "IdVente", "IdVente", facture.IdVente);
-            return View(facture);
-        }
-
-        // GET: Factures/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var facture = await _context.Factures.FindAsync(id);
-            if (facture == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdVente"] = new SelectList(_context.Ventes, "IdVente", "IdVente", facture.IdVente);
-            return View(facture);
-        }
-
-        // POST: Factures/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdFacture,Total,IdVente")] Facture facture)
-        {
-            if (id != facture.IdFacture)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(facture);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FactureExists(facture.IdFacture))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdVente"] = new SelectList(_context.Ventes, "IdVente", "IdVente", facture.IdVente);
-            return View(facture);
-        }
-
-        // GET: Factures/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var facture = await _context.Factures
-                .Include(f => f.IdVenteNavigation)
-                .FirstOrDefaultAsync(m => m.IdFacture == id);
-            if (facture == null)
-            {
-                return NotFound();
-            }
-
-            return View(facture);
-        }
 
         // POST: Factures/Delete/5
         [HttpPost, ActionName("Delete")]

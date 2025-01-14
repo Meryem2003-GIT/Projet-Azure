@@ -1,0 +1,41 @@
+﻿@model FactureModel
+
+<div class="facture">
+    <h2>Facture #@Model.FactureId</h2>
+    <p><strong>Client :</strong> @Model.ClientPrenom @Model.ClientNom</p>
+    <p><strong>Email :</strong> @Model.ClientEmail</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix Unitaire</th>
+                <th>Quantité</th>
+                <th>Montant</th>
+                <th>Remise</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produit in Model.Produits)
+            {
+                <tr>
+                    <td>@produit.ProduitLibelle</td>
+                    <td>@produit.ProduitPrix.ToString("C")</td>
+                    <td>@produit.Quantite</td>
+                    <td>@produit.MontantProduit.ToString("C")</td>
+                    <td>@produit.Remise?.ToString("P")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total : @Model.FactureTotal.ToString("C")</h3>
+    <center>
+        <form asp-action="AjouterProduit" asp-controller="Factures" method="get">
+            <input type="hidden" name="idFacture" value="@Model.FactureId" />
+            <button type="submit" class="btn btn-primary">Ajouter un produit</button>
+        </form>
+    </center>
+</div>
+
+<link rel="stylesheet" href="~/css/facture.css" />

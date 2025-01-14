@@ -36,7 +36,7 @@ public partial class GestionPharmacieBdContext : DbContext
     public virtual DbSet<Vente> Ventes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-MGAJ56I\\MIMSSQL; Database=GestionPharmacieBD;Trusted_Connection=True; TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=LAPTOP-AJ9U5OHT; Database=GestionPharmacieBD;Trusted_Connection=True; TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -114,12 +114,8 @@ public partial class GestionPharmacieBdContext : DbContext
             entity.ToTable("Facture");
 
             entity.Property(e => e.IdFacture).HasColumnName("id_facture");
-            entity.Property(e => e.IdVente).HasColumnName("id_vente");
             entity.Property(e => e.Total).HasColumnName("total");
 
-            entity.HasOne(d => d.IdVenteNavigation).WithMany(p => p.Factures)
-                .HasForeignKey(d => d.IdVente)
-                .HasConstraintName("FK__Facture__id_vent__5165187F");
         });
 
         modelBuilder.Entity<Fournisseur>(entity =>
@@ -213,6 +209,10 @@ public partial class GestionPharmacieBdContext : DbContext
                 .HasConstraintName("FK__Stock__quantite__440B1D61");
         });
 
+
+        
+
+
         modelBuilder.Entity<Vente>(entity =>
         {
             entity.HasKey(e => e.IdVente).HasName("PK__Vente__459533B36DC72F93");
@@ -221,6 +221,7 @@ public partial class GestionPharmacieBdContext : DbContext
 
             entity.Property(e => e.IdVente).HasColumnName("id_vente");
             entity.Property(e => e.DateVente).HasColumnName("date_vente");
+            entity.Property(e => e.IdFacture).HasColumnName("id_facture");
             entity.Property(e => e.IdClient).HasColumnName("id_client");
             entity.Property(e => e.Quantite).HasColumnName("quantite");
             entity.Property(e => e.Reference).HasColumnName("reference");
@@ -234,6 +235,12 @@ public partial class GestionPharmacieBdContext : DbContext
                 .HasForeignKey(d => d.Reference)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Vente__reference__4AB81AF0");
+
+            entity.HasOne(d => d.IdFactureNavigation)  // Navigation vers Facture
+        .WithMany(p => p.Ventes)    // Relation un-à-plusieurs, une facture a plusieurs ventes
+        .HasForeignKey(d => d.IdFacture) // Clé étrangère vers Facture
+        .OnDelete(DeleteBehavior.SetNull) // Si la facture est supprimée, ne supprime pas les ventes
+        .HasConstraintName("FK__Vente__id_facture__12");
         });
 
         OnModelCreatingPartial(modelBuilder);

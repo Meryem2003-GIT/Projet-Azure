@@ -1,42 +1,35 @@
 ﻿@model gestionPharmacieApp.Models.Vente
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails de la Vente";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Vente</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateVente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateVente)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantite)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantite)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdClientNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdClientNavigation.IdClient)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReferenceNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReferenceNavigation.Reference)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdVente">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow" style="width: 90%;height: 90%">
+        <div class="card-header  text-white" style="background-color: #4B5920;">
+            <h3 class="card-title text-center">Détails de la Vente</h3>
+        </div>
+        <div class="card-body text-center">
+            <div class="row mb-3">
+                <div class="col-sm-6 font-weight-bold">Date de la Vente :</div>
+                <div class="col-sm-6">@Html.DisplayFor(model => model.DateVente)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-6 font-weight-bold">Quantité :</div>
+                <div class="col-sm-6">@Html.DisplayFor(model => model.Quantite)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-6 font-weight-bold">CIN du client :</div>
+                <div class="col-sm-6">@Html.DisplayFor(model => model.IdClientNavigation.Cin)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-6 font-weight-bold">Libelle du produit :</div>
+                <div class="col-sm-6">@Html.DisplayFor(model => model.ReferenceNavigation.Libelle)</div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+            <a asp-action="Delete" asp-route-id="@Model.IdVente" class="btn btn-danger">Annuler la vente</a>
+        </div>
+    </div>
 </div>

@@ -1,41 +1,47 @@
-﻿@model IEnumerable<gestionPharmacieApp.Models.Facture>
+﻿@model IEnumerable<dynamic>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des Factures";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Total)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdVenteNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Total)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdVenteNavigation.IdVente)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdFacture">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdFacture">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdFacture">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+
+<h1 class="my-4 text-center ">@ViewData["Title"]</h1>
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Facture ID</th>
+                <th>Total Facture</th>
+                <th>Date de Vente</th>
+                <th>Quantité</th>
+                <th>Produit</th>
+                <th>Prix Unitaire</th>
+                <th>Client</th>
+                <th>Email Client</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var facture in Model)
+            {
+                <tr>
+                    <td>@facture.FactureId</td>
+                    <td>@facture.TotalFacture.ToString("C")</td> <!-- Format en devise -->
+                    <td>@facture.DateVente.ToString("dd/MM/yyyy")</td> <!-- Format de date -->
+                    <td>@facture.Quantite</td>
+                    <td>@facture.ProduitLibelle</td>
+                    <td>@facture.ProduitPrix.ToString("C")</td> <!-- Format en devise -->
+                    <td>@facture.ClientNom</td>
+                    <td>@facture.ClientEmail</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Ajout de bouton pour actions futures -->
+
+<!-- Lien vers Bootstrap JS pour fonctionnalité avancée -->

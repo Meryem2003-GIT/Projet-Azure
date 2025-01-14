@@ -4,21 +4,70 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Client</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow" style="width: 90%;height: 90%">
+        <div class="card-header  text-white" style="background-color: #4B5920;">
+            <h3 class="card-title text-center">Les informations du client</h3>
+        </div>
+        <div class="card-body text-center">
+            <div class="row mb-3">
+    
+                    <div class="col-sm-6 font-weight-bold">
             @Html.DisplayNameFor(model => model.CinNavigation)
-        </dt>
-        <dd class = "col-sm-10">
+        </div>
+                    <div class="col-sm-6">
             @Html.DisplayFor(model => model.CinNavigation.Cin)
-        </dd>
-    </dl>
+                    </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.Nom)
+                    </div>
+                        <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.Nom)
+                        </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.Prenom)
+                        </div>
+                            <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.Prenom)
+                            </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.DateNaissance)
+                            </div>
+                                <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.DateNaissance)
+                                </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.Email)
+                                </div>
+                                    <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.Email)
+                                    </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.Telephone)
+                                    </div>
+                                        <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.Telephone)
+                                        </div>
+                    <div class="col-sm-6 font-weight-bold">
+            @Html.DisplayNameFor(model => model.CinNavigation.Adresse)
+                                        </div>
+                                            <div class="col-sm-6">
+            @Html.DisplayFor(model => model.CinNavigation.Adresse)
+        </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <!-- Boutons Modifier et Supprimer -->
+            <a asp-action="Edit" asp-route-id="@Model?.IdClient" class="btn btn-warning">Modifier</a>
+            <a asp-action="Delete" asp-route-id="@Model?.IdClient" class="btn btn-danger">Supprimer</a>
+            <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+            <a asp-controller="Ventes" asp-action="Create" asp-route-id="@Model?.IdClient" class="btn btn-primary">Enregistrer une vente</a>
+
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdClient">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+

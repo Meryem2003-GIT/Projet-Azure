@@ -7,9 +7,9 @@ public partial class Facture
 {
     public int IdFacture { get; set; }
 
-    public int Total { get; set; }
+    public double Total { get; set; }
 
-    public int? IdVente { get; set; }
-
-    public virtual Vente? IdVenteNavigation { get; set; }
+    
+    public virtual ICollection<Vente> Ventes { get; set; }
+    
 }

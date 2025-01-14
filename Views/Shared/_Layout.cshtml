@@ -1,40 +1,81 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - gestionPharmacieApp</title>
-    
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/gestionPharmacieApp.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Duo Santé</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">gestionPharmacieApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="d-flex">
+        <!-- Menu latéral -->
+        <nav>
+            <div>
+                <h3>Parapharmacie</h3>
+                <h5>Duo Santé</h5>
             </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        <!-- Insère ton image ici pour Dashboard -->
+                        <img src="~/images/dashboard.png" alt="Dashboard Icon"> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Produits" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des produits -->
+                        <img src="~/images/gestionproduit.png" alt="Gestion des Produits Icon"> Produits
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Stocks" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion du stock -->
+                        <img src="~/images/gestionstock.png" alt="Gestion du Stock Icon"> Stock
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Fournisseurs" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des fournisseurs -->
+                        <img src="~/images/gestionfournisseur.png" alt="Gestion des Fournisseurs Icon"> Fournisseurs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Commandes" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des commandes -->
+                        <img src="~/images/gestioncommande.png" alt="Gestion des Commandes Icon"> Commandes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Clients" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des ventes -->
+                        <img src="~/images/gestionvente.png" alt="Gestion des Ventes Icon"> Clients
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Ventes" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des ventes -->
+                        <img src="~/images/gestionvente.png" alt="Gestion des Ventes Icon"> Ventes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Factures" asp-action="Index">
+                        <!-- Insère ton image ici pour Gestion des commandes -->
+                        <img src="~/images/gestioncommande.png" alt="Gestion des Commandes Icon"> Factures
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Auth" asp-action="Logout">
+                        <!-- Insère ton image ici pour Quitter la session -->
+                        <img src="~/images/logout.png" alt="Logout Icon"> Quitter la session
+                    </a>
+                </li>
+            </ul>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+        <!-- Contenu principal -->
+        <div class="flex-grow-1 p-4">
             @RenderBody()
         </div>
     </div>

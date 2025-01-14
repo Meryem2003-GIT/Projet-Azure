@@ -1,14 +1,22 @@
 ﻿@model IEnumerable<gestionPharmacieApp.Models.Vente>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des ventes";
 }
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+<!-- Formulaire de recherche -->
+<form asp-action="Search" method="get" class="d-flex align-items-center mb-3">
+    <label for="searchType" class="mr-2 font-weight-bold">Rechercher par :</label>
+    <select id="searchType" name="searchType" class="form-control mr-3" style="width: auto;">
+        <option value="cin">CIN</option>
+        <option value="libelle">Libelle</option>
+    </select>
+    <input type="text" name="keyword" class="form-control flex-grow-1 mr-3" placeholder="Mot-clé" required />
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -19,10 +27,13 @@
                 @Html.DisplayNameFor(model => model.Quantite)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdClientNavigation)
+                @Html.DisplayNameFor(model => model.IdClientNavigation.Cin)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReferenceNavigation)
+                @Html.DisplayNameFor(model => model.ReferenceNavigation.Libelle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdFacture)
             </th>
             <th></th>
         </tr>
@@ -37,16 +48,17 @@
                 @Html.DisplayFor(modelItem => item.Quantite)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdClientNavigation.IdClient)
+                @Html.DisplayFor(modelItem => item.IdClientNavigation.Cin)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ReferenceNavigation.Reference)
+                @Html.DisplayFor(modelItem => item.ReferenceNavigation.Libelle)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdVente">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdVente">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdVente">Delete</a>
-            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdFacture)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdVente" class="btn btn-info btn-sm">Détails</a>
+                </td>
         </tr>
 }
     </tbody>
