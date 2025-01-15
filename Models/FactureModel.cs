@@ -10,6 +10,9 @@ namespace gestionPharmacieApp.Models
         public string ClientNom { get; set; }
         public string ClientPrenom { get; set; }
         public string ClientEmail { get; set; }
+        public int Quantite { get; set; }
+        public double Remise { get; set; }
+        public DateOnly dateFacture { get; set; }
         public List<ProduitDetailsModel> Produits { get; set; }
         public List<SelectListItem> ProduitsBD { get; set; }
     }

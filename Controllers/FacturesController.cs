@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionPharmacieApp.Models;
+using System.Collections;
 
 namespace gestionPharmacieApp.Controllers
 {
@@ -40,7 +41,8 @@ namespace gestionPharmacieApp.Controllers
                                      MontantProduit = produit.Prix * vente.Quantite,
                                      Remise = (from prog in _context.ProgFidelites
                                                where prog.IdClient == client.IdClient
-                                               select prog.Remise).FirstOrDefault()
+                                               select prog.Remise).FirstOrDefault(),
+                                    DateFacture = vente.DateVente
                                  };
 
             var factureData = factureDetails.GroupBy(f => new { 
@@ -49,7 +51,10 @@ namespace gestionPharmacieApp.Controllers
                                                 f.ClientId, 
                                                 f.ClientNom, 
                                                 f.ClientPrenom, 
-                                                f.ClientEmail })
+                                                f.ClientEmail,
+                                                f.Remise,
+                                                f.DateFacture
+                                                })
                                              .Select(group => new FactureModel
                                              {
                                                  FactureId = group.Key.FactureId,
@@ -58,6 +63,8 @@ namespace gestionPharmacieApp.Controllers
                                                  ClientNom = group.Key.ClientNom,
                                                  ClientPrenom = group.Key.ClientPrenom,
                                                  ClientEmail = group.Key.ClientEmail,
+                                                 Remise = (double)group.Key.Remise,
+                                                 dateFacture = group.Key.DateFacture,
                                                  Produits = group.Select(p => new ProduitDetailsModel
                                                  {
                                                      ProduitLibelle = p.ProduitLibelle,
@@ -78,7 +85,7 @@ namespace gestionPharmacieApp.Controllers
 
 
         [HttpGet]
-        public IActionResult AjouterProduit(int? idFacture)
+        public IActionResult AjouterProduit(int? idFacture, int idClient)
         {
             var factureDetails = from facture in _context.Factures
                                  join vente in _context.Ventes on facture.IdFacture equals vente.IdFacture
@@ -100,13 +107,9 @@ namespace gestionPharmacieApp.Controllers
                                      MontantProduit = produit.Prix * vente.Quantite,
                                      Remise = (from prog in _context.ProgFidelites
                                                where prog.IdClient == client.IdClient
-                                               select prog.Remise).FirstOrDefault()
+                                               select prog.Remise).FirstOrDefault(),
+                                     DateFacture = vente.DateVente
                                  };
-
-            if (factureDetails == null)
-            {
-                return NotFound("Facture introuvable.");
-            }
 
             var factureData = factureDetails.GroupBy(f => new {
                 f.FactureId,
@@ -114,8 +117,11 @@ namespace gestionPharmacieApp.Controllers
                 f.ClientId,
                 f.ClientNom,
                 f.ClientPrenom,
-                f.ClientEmail
-            }).Select(group => new FactureModel
+                f.ClientEmail,
+                f.Remise,
+                f.DateFacture
+            })
+                                             .Select(group => new FactureModel
                                              {
                                                  FactureId = group.Key.FactureId,
                                                  FactureTotal = group.Key.FactureTotal,
@@ -123,6 +129,8 @@ namespace gestionPharmacieApp.Controllers
                                                  ClientNom = group.Key.ClientNom,
                                                  ClientPrenom = group.Key.ClientPrenom,
                                                  ClientEmail = group.Key.ClientEmail,
+                                                 Remise = (double)group.Key.Remise,
+                                                 dateFacture = group.Key.DateFacture,
                                                  Produits = group.Select(p => new ProduitDetailsModel
                                                  {
                                                      ProduitLibelle = p.ProduitLibelle,
@@ -147,15 +155,22 @@ namespace gestionPharmacieApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AjouterProduit(int idFacture, int produitId, int quantite)
+        public async Task<IActionResult> AjouterProduit(int idFacture, int ReferenceProduit, int Quantite, int IdClient)
         {
-            var facture = _context.Factures.FirstOrDefault(f => f.IdFacture == idFacture);
+            if (ReferenceProduit == null || Quantite <= 0)
+            {
+                // Gestion des erreurs (ex: produit non sélectionné ou quantité invalide)
+                
+                TempData["ErrorMessage"] = "Produit ou quantité invalide.";
+                return RedirectToAction("AjouterProduit", new { idFacture = idFacture });
+            }
+            var facture =  _context.Factures.FirstOrDefault(f => f.IdFacture == idFacture);
             if (facture == null)
             {
                 return NotFound("Facture introuvable.");
             }
 
-            var produit = _context.Produits.FirstOrDefault(p => p.Reference == produitId);
+            var produit = _context.Produits.FirstOrDefault(p => p.Reference == ReferenceProduit);
             if (produit == null)
             {
                 return NotFound("Produit introuvable.");
@@ -165,14 +180,52 @@ namespace gestionPharmacieApp.Controllers
             var vente = new Vente
             {
                 IdFacture = idFacture,
-                Reference = produitId,
-                Quantite = quantite
+                Reference = ReferenceProduit,
+                Quantite = Quantite,
+                IdClient = IdClient
             };
             _context.Ventes.Add(vente);
             _context.SaveChanges();
+            var programmeFidelite = await _context.ProgFidelites.FirstOrDefaultAsync(p => p.IdClient == IdClient);
+            if (programmeFidelite != null)
+            {
+                double totalVente = produit.Prix * vente.Quantite;
+                programmeFidelite.Points += (int?)(programmeFidelite.Points + totalVente);
+                if (programmeFidelite.Points >= 1000)
+                {
+                    programmeFidelite.Remise = 2.0;
+                    // Met à jour la facture avec le total
 
+                    facture.Total += totalVente - (totalVente * 0.02);
+                    programmeFidelite.Points -= 1000;
+                    _context.Factures.Update(facture);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    programmeFidelite.Remise = 0.0;
+                    facture.Total =  facture.Total+totalVente;
+                    _context.Factures.Update(facture);
+                    await _context.SaveChangesAsync();
+                }
+                _context.ProgFidelites.Update(programmeFidelite);
+                await _context.SaveChangesAsync();
+            }
+            var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Reference == vente.Reference);
+            if (stock == null || stock.Quantite < vente.Quantite)
+            {
+                ModelState.AddModelError("", $"le stock est{stock.Quantite} la quantite est : {vente.Quantite}");
+                ModelState.AddModelError("", "Quantité demandée non disponible ou stock introuvable.");
+                
+                return View(vente);
+            }
+
+            // Met à jour le stock
+            stock.Quantite -= vente.Quantite;
+            _context.Stocks.Update(stock);
+            
             // Rediriger vers la même page pour afficher la mise à jour
-            return RedirectToAction("AjouterProduits", new { idFacture });
+            return RedirectToAction("factureClient", "Factures", facture);
         }
         public async Task<IActionResult> Index()
         {

@@ -153,18 +153,20 @@ namespace gestionPharmacieApp.Controllers
                     {
                         double totalVente = produit.Prix * vente.Quantite;
                         programmeFidelite.Points += (int)Math.Floor(totalVente);
+                        programmeFidelite.Remise = 0.0;
                         if (programmeFidelite.Points >= 1000)
                         {
-                            programmeFidelite.Remise = 2;
+                            programmeFidelite.Remise = 2.0;
                             // Met à jour la facture avec le total
 
                             facture.Total += totalVente - (totalVente * 0.02);
                             programmeFidelite.Points -= 100;
-                            _context.Factures.Update(facture);
-                            await _context.SaveChangesAsync();
+                            
+                            
                         }
                         else {
-                            facture.Total = totalVente;
+                            programmeFidelite.Remise = 0.0;
+                            facture.Total = facture.Total + totalVente;
                         }
                         _context.ProgFidelites.Update(programmeFidelite);
                         await _context.SaveChangesAsync();

@@ -1,58 +1,79 @@
 ﻿@model gestionPharmacieApp.Models.Compte
-Tuple<Compte, Client>
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h1>Create</h1>
+    @{
+        ViewData["Title"] = "Créer un client";
+    }
 
-<h4>Client</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Cin" class="control-label"></label>
-                    <input asp-for="Cin" class="form-control">
-                    <span asp-validation-for="Cin" class="text-danger"></span>
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card shadow" style="width: 90%; height: 90%">
+            <div class="card-header text-white" style="background-color: #4B5920;">
+                <h3 class="card-title text-center">Ajouter un nouveau client</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="Nom" class="control-label"></label>
-                <input asp-for="Nom" class="form-control" />
-                    <span asp-validation-for="Nom" class="text-danger"></span>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="row">
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Cin" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Cin" class="form-control" />
+                            <span asp-validation-for="Cin" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Nom" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Nom" class="form-control" />
+                            <span asp-validation-for="Nom" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Prenom" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Prenom" class="form-control" />
+                            <span asp-validation-for="Prenom" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Adresse" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Adresse" class="form-control" />
+                            <span asp-validation-for="Adresse" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Email" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-sm-6 font-weight-bold">
+                            <label asp-for="Telephone" class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input asp-for="Telephone" class="form-control" />
+                            <span asp-validation-for="Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <input type="submit" value="Créer" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                    <label asp-for="Prenom" class="control-label"></label>
-                    <input asp-for="Prenom" class="form-control" />
-                    <span asp-validation-for="Prenom" class="text-danger"></span>
+            <div class="card-footer d-flex justify-content-end">
+                <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
             </div>
-            <div class="form-group">
-                    <label asp-for="Adresse" class="control-label"></label>
-                    <input asp-for="Adresse" class="form-control" />
-                    <span asp-validation-for="Adresse" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                    <label asp-for="Telephone" class="control-label"></label>
-                    <input asp-for="Telephone" class="form-control" />
-                    <span asp-validation-for="Telephone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }

@@ -32,6 +32,7 @@
     <h3>Ajouter un Nouveau Produit</h3>
     <form asp-action="AjouterProduit" asp-controller="Factures" method="post">
         <input type="hidden" name="IdFacture" value="@Model.FactureId" />
+        <input type="hidden" name="IdClient" value="@Model.ClientId" />
         <div>
             <label>Produit</label>
             <select name="ReferenceProduit" class="form-control">

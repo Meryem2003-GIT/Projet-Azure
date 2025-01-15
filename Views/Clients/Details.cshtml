@@ -33,12 +33,6 @@
             @Html.DisplayFor(model => model.CinNavigation.Prenom)
                             </div>
                     <div class="col-sm-6 font-weight-bold">
-            @Html.DisplayNameFor(model => model.CinNavigation.DateNaissance)
-                            </div>
-                                <div class="col-sm-6">
-            @Html.DisplayFor(model => model.CinNavigation.DateNaissance)
-                                </div>
-                    <div class="col-sm-6 font-weight-bold">
             @Html.DisplayNameFor(model => model.CinNavigation.Email)
                                 </div>
                                     <div class="col-sm-6">
@@ -55,13 +49,13 @@
                                         </div>
                                             <div class="col-sm-6">
             @Html.DisplayFor(model => model.CinNavigation.Adresse)
-        </div>
-            </div>
-        </div>
+                    </div>
+      </div>
+   </div>
         <div class="card-footer d-flex justify-content-between">
             <!-- Boutons Modifier et Supprimer -->
             <a asp-action="Edit" asp-route-id="@Model?.IdClient" class="btn btn-warning">Modifier</a>
-            <a asp-action="Delete" asp-route-id="@Model?.IdClient" class="btn btn-danger">Supprimer</a>
+            
             <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
             <a asp-controller="Ventes" asp-action="Create" asp-route-id="@Model?.IdClient" class="btn btn-primary">Enregistrer une vente</a>
 

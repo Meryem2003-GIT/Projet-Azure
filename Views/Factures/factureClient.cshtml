@@ -4,6 +4,7 @@
     <h2>Facture #@Model.FactureId</h2>
     <p><strong>Client :</strong> @Model.ClientPrenom @Model.ClientNom</p>
     <p><strong>Email :</strong> @Model.ClientEmail</p>
+    <p><strong>Date facture :</strong> @Model.dateFacture</p>
 
     <table class="table table-bordered">
         <thead>
@@ -23,7 +24,7 @@
                     <td>@produit.ProduitPrix.ToString("C")</td>
                     <td>@produit.Quantite</td>
                     <td>@produit.MontantProduit.ToString("C")</td>
-                    <td>@produit.Remise?.ToString("P")</td>
+                    <td>@(produit.Remise != null ? produit.Remise.ToString() : "0.00")</td>
                 </tr>
             }
         </tbody>
@@ -33,9 +34,11 @@
     <center>
         <form asp-action="AjouterProduit" asp-controller="Factures" method="get">
             <input type="hidden" name="idFacture" value="@Model.FactureId" />
+            <input type="hidden" name="idClient" value="@Model.ClientId" />
             <button type="submit" class="btn btn-primary">Ajouter un produit</button>
         </form>
     </center>
+   
 </div>
 
 <link rel="stylesheet" href="~/css/facture.css" />
