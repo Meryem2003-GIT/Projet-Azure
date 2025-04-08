@@ -2,19 +2,19 @@ name: Deploy to Azure
 
 on:
   push:
-    branches:
-      - main  # Changez ceci si votre branche principale s'appelle différemment (master par exemple)
+    branches: [main]
+  workflow_dispatch:  # Permet de déclencher manuellement depuis l'interface GitHub
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Version mise à jour
+        uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3  # Version mise à jour
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0'
 
@@ -27,9 +27,9 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish --no-build
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: <Nom-de-ton-App-Service>  # À remplacer
+          app-name: Projet-Azure-Hasna-Meryem  # Nom exact de votre App Service
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./publish
