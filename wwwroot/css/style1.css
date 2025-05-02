@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('/images/para1.png');
+    background-image: url('/images/para1.PNG');
     background-size: cover; /* Assure que l'image couvre toute la page */
     background-position: center; /* Centre l'image */
     background-repeat: no-repeat; /* Empêche la répétition de l'image */
